@@ -94,6 +94,11 @@ def init_routes(app):
                 or query.lower() in movie["genres"].lower()
             ]
 
+        page = request.args.get('page', 1, type=int)
+        per_page = 10
+        total_pages = (len(search_results) + per_page - 1) // per_page
+        paginated_movies = search_results[(page - 1) * per_page: page * per_page]
+
         return render_template(
             "search.html",
             query=query,
