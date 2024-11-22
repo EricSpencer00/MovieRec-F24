@@ -54,15 +54,27 @@ def init_routes(app):
     # Recommendation
     @app.route("/recommend", methods=["POST"])
     def recommend():
-        data = request.json
-        recommendation = movie_recommendation([data["input"]])  # Adjust based on your input format
-        return jsonify({"recommendations": recommendation.tolist()})
+        try:
+            # Parse input data
+            data = request.json
+            input_title = data["input"]
+
+            # Dynamically load and process the data
+            movies = load_data("model/data/movies.csv")
+            tfidf, tfidf_matrix = create_tfidf_matrix(movies)
+            cosine_sim = compute_cosine_similarity(tfidf_matrix)
+
+            # Get recommendations
+            recommendations = model.run_colab_model.get_recommendations(input_title, movies, cosine_sim)
+            return jsonify({"recommendations": recommendations.tolist()})
+        except Exception as e:
+            print(f"Error generating recommendations: {e}")
+            return jsonify({"error": "Failed to generate recommendations"}), 500
 
     # Fetch Movie Data
     @app.route("/movie/<movie_id>", methods=["GET"])
     def movie(movie_id):
-        try:
-            # Dynamically load the data
+        try: # THIS DOES NOT WORK
             movies = load_data("model/data/movies.csv")
             
             # Create TF-IDF and similarity matrix on demand
@@ -81,7 +93,7 @@ def init_routes(app):
         except Exception as e:
             print(f"Error processing movie {movie_id}: {e}")
             return render_template("error.html", error="Error fetching movie details.")
-
+        
     @app.route("/discover", methods=["GET", "POST"])
     def discover():
         # Limit for heroku

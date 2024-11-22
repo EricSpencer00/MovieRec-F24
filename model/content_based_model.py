@@ -21,18 +21,14 @@ def load_data(file_path):
 
 def preprocess_data(movies: pd.DataFrame):
     """
-    Combine relevant features into a single feature for each movie.
+    Combine genres, director, actors, and writers into a single feature for each movie.
     """
-    # Parse the 'genres' column and convert it to a space-separated string
-    movies["genres"] = movies["genres"].apply(lambda x: " ".join(eval(x)) if isinstance(x, str) else "")
-    
-    # Combine relevant features into 'combined_features'
-    movies["combined_features"] = (
-        movies["genres"] + " " + movies["movie_title"] + " " + movies["original_language"]
-    )
-    
-    # Fill any missing values in 'combined_features' with an empty string
-    movies["combined_features"].fillna("", inplace=True)
+    # Replace NaN values with empty strings to avoid concatenation errors
+    # movies.fillna("", inplace=True)
+
+    # # Clean and preprocess the 'genres' column (remove "|")
+    # movies["genres"] = movies["genres"].apply(lambda x: x.replace("|", " "))
+
     return movies
 
 
