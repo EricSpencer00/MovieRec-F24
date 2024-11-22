@@ -4,8 +4,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # model/data/movies.csv.gz
-file_path = "model/data/movies.csv.gz" # Comment to use method locally
+file_path = "model/data/movies.csv.gz"  # Comment to use method locally
 # file_path = "./data/movies.csv.gz" # Uncomment to use method locally
+
 
 def load_data(file_path):
     """

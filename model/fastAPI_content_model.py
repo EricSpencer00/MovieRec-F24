@@ -8,14 +8,17 @@ app = FastAPI()
 
 logging.basicConfig(level=logging.DEBUG)
 
+
 def load_data():
     logging.debug("Loading data...")
     # Implement your data loading logic here
     # For example, reading from a CSV file
     return pd.read_csv("../model/data/movies.csv")
 
+
 def preprocess_data(movies: pd.DataFrame):
     logging.debug("Preprocessing data...")
+
     def parse_genres(genre_str):
         try:
             if isinstance(genre_str, str):
@@ -24,7 +27,7 @@ def preprocess_data(movies: pd.DataFrame):
                 return ""
         except Exception as e:
             logging.error(f"Error parsing genres: {e}")
-            return "" 
+            return ""
 
     movies["genres"] = movies["genres"].apply(parse_genres)
     movies["movie_title"] = movies["movie_title"].fillna("").astype(str)
@@ -34,6 +37,7 @@ def preprocess_data(movies: pd.DataFrame):
     )
     logging.debug("Data preprocessing complete.")
     return movies
+
 
 def get_recommendations(title, movies, cosine_sim):
     logging.debug(f"Getting recommendations for movie: {title}")
@@ -45,6 +49,7 @@ def get_recommendations(title, movies, cosine_sim):
     recommendations = movies["movie_title"].iloc[movie_indices].tolist()
     logging.debug(f"Recommendations: {recommendations}")
     return recommendations
+
 
 @app.post("/movie_info/{movie_title}")
 async def movie_info(movie_title: str):
@@ -70,14 +75,15 @@ async def movie_info(movie_title: str):
     logging.debug(f"Returning recommendations: {recommendations}")
     return {"recommended_movies": recommendations}
 
+
 # EXAMPLE TO TEST:
 # Run uvicorn fastAPI_content_model:app --reload
 # Then run the following curl command in a separate terminal:
 
-'''
+"""
 
 curl -X POST http://127.0.0.1:8000/movie_info/joker -H "Content-Type: application/json" -d '{
     "movie_title": "Joker",
     "year_released": 2019,
     "genres": ["Crime", "Drama", "Thriller"],
-'''
+"""
