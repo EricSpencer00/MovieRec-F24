@@ -3,8 +3,11 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+# model/data/movies.csv.gz
+file_path = "model/data/movies.csv.gz" # Comment to use method locally
+# file_path = "./data/movies.csv.gz" # Uncomment to use method locally
 
-def load_data(file_path="./data/movies.csv.gz"):
+def load_data(file_path):
     """
     Load the dataset from a CSV file.
     """
@@ -18,14 +21,18 @@ def load_data(file_path="./data/movies.csv.gz"):
 
 def preprocess_data(movies: pd.DataFrame):
     """
-    Combine genres, director, actors, and writes into a single feature for each movie.
+    Combine relevant features into a single feature for each movie.
     """
-    # TODO
-    # something like
-    # movies['combined_features'] = movies['genres'] + ' ' + movies['director']
-    # ect...
-    # Note. you should parse movies['genres'] using something like .split("|") because the format is
-    # genre1 | genre2 | ... and we want just spaces no vertical bars
+    # Parse the 'genres' column and convert it to a space-separated string
+    movies["genres"] = movies["genres"].apply(lambda x: " ".join(eval(x)) if isinstance(x, str) else "")
+    
+    # Combine relevant features into 'combined_features'
+    movies["combined_features"] = (
+        movies["genres"] + " " + movies["movie_title"] + " " + movies["original_language"]
+    )
+    
+    # Fill any missing values in 'combined_features' with an empty string
+    movies["combined_features"].fillna("", inplace=True)
     return movies
 
 

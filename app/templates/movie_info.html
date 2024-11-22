@@ -64,7 +64,7 @@
             <p class="text-gray-600">No reviews available.</p>
         {% endif %}
     </section>    
-    <section class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl mt-6">
+    <!-- <section class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl mt-6">
         <h2 class="text-xl font-bold mb-4">Recommendations</h2>
         <div class="grid grid-cols-2 gap-4">
             {% for rec in recommendations %}
@@ -81,6 +81,22 @@
                 <p>No recommendations available.</p>
             {% endfor %}
         </div>
+    </section> -->
+    <h2 class="text-xl font-bold mt-8">Recommended Movies</h2>
+    <section class="bg-black/10 p-4 md:p-8 rounded-lg flex flex-col gap-4 shadow-lg">
+    {% if recommendations %}
+        <ul>
+        {% for rec in recommendations %}
+            <li class="text-white/75">
+            <a href="/movie/{{ rec | replace(' ', '-') }}" class="text-primary hover:underline">
+                {{ rec }}
+            </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-white/75">No recommendations available.</p>
+    {% endif %}
     </section>
     <section class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl mt-6">
         <h2 class="text-xl font-bold mb-4">IMDB Link</h2>
