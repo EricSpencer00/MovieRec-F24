@@ -178,15 +178,9 @@ def get_movie_recommendations(
         return str(e)
 
 
-if __name__ == "__main__":
-    # Sample use case
-    import time
-
-    start_time = time.time()
-    movie_title = "Parasite"
-    recommendations = get_movie_recommendations(movie_title)
-    print(f"Top 5 recommendations for '{movie_title}':")
-    for film_id in recommendations:
-        print(film_id)
-    # Uncomment if you want to make and save a new tfidf matrix
-    # make_and_save_model()
+# TESTING
+# movie_title = "Scream"
+# recommendations = get_movie_recommendations(movie_title)
+# print(f"Top 5 recommendations for '{movie_title}':")
+# for film_id in recommendations:
+#     print(film_id)
