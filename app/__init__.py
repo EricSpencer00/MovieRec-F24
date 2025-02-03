@@ -2,7 +2,8 @@ from flask import Flask  # type: ignore
 from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass  # type: ignore
 from flask_sqlalchemy import SQLAlchemy  # type: ignore
 from flask_login import LoginManager  # type: ignore
-
+from .model import load_data, preprocess_data, create_tfidf_matrix
+import joblib
 from app.exceptions import init_exception_handler
 import os
 
@@ -45,6 +46,18 @@ def create_app():
     with app.app_context():
         # db.drop_all()
         db.create_all()
+
+    # --- Collaborative model: load once ---
+    # Assume that model.pkl contains your pre‐trained collaborative filtering model
+    app.config["COLLAB_MODEL"] = joblib.load("model.pkl")
+    
+    # --- Content-based model: preload data and TF-IDF ---
+    movies = load_data("model/data/movies.csv.gz")
+    movies = preprocess_data(movies)
+    tfidf, tfidf_matrix = create_tfidf_matrix(movies)
+    app.config["TFIDF"] = tfidf
+    app.config["TFIDF_MATRIX"] = tfidf_matrix
+    app.config["MOVIES_DF"] = movies
 
     init_routes(app)
     init_exception_handler(app)
